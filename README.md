@@ -1,33 +1,56 @@
 # Nexus Chess
 
-A real-time browser chess game with local training and room-based multiplayer.
+> A focused, real-time chess board for local training and long-distance matches.
 
-## Features
+[![CI](https://github.com/NamanPahariya2009/Nexus-Chess/actions/workflows/ci.yml/badge.svg)](https://github.com/NamanPahariya2009/Nexus-Chess/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-00e5ff.svg)](LICENSE)
 
-- Training mode with adjustable local opponent difficulty
-- Network mode with shareable room codes via Socket.io
-- Drag-and-drop and click-to-move controls
-- Move history, captured material, reset, resign, check, and checkmate feedback
-- Black-player board rotation
-- Express serves the production Vite build and Socket.io from one port
+Nexus Chess is a browser chess experience with a stark control-room interface, validated moves, animated game states, and room-based multiplayer. Play against the local training opponent or invite a friend with a short room code.
 
-## Requirements
+## What Is Included
 
-- Node.js 20 or newer
+### Training
+
+- Adjustable opponent profiles
+- Responsive local move selection
+- Legal move validation through `chess.js`
+
+### Network
+
+- Create or join a room with a six-character code
+- Low-latency Socket.io synchronization
+- Automatic Black-side board rotation
+- Opponent disconnect and resignation feedback
+
+### Board Experience
+
+- Click or drag-and-drop movement
+- Move history and captured material
+- Check, checkmate, and resignation animations
+- Reference-inspired grayscale pieces and textured board
+- Reset and resign controls
+
+## Quick Start
+
+### Requirements
+
+- Node.js 20+
 - npm
 
-## Run Locally
+### Development
 
 ```powershell
+git clone https://github.com/NamanPahariya2009/Nexus-Chess.git
+cd Nexus-Chess
 npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`.
+Open [http://localhost:5173](http://localhost:5173).
 
-The development client runs on port `5173` and proxies Socket.io traffic to the Express server on port `3000`.
+Vite serves the client on port `5173` and proxies Socket.io traffic to the Express server on port `3000`.
 
-## Production Run
+### Production
 
 ```powershell
 npm install
@@ -35,13 +58,13 @@ npm run build
 npm run start
 ```
 
-Open `http://localhost:3000`.
+Open [http://localhost:3000](http://localhost:3000).
 
-The server binds to `0.0.0.0`, so it can be reached from another device on the same network using your computer's LAN IP.
+The Express server binds to `0.0.0.0` and serves the compiled client and Socket.io from the same port.
 
-## Remote Multiplayer
+## Play With A Friend
 
-For a quick internet test, start the production server and expose port `3000` through a tunnel such as ngrok:
+For a quick remote match, expose the production server with a WebSocket-compatible tunnel:
 
 ```powershell
 npm run build
@@ -49,32 +72,38 @@ npm run start
 ngrok http 3000
 ```
 
-Share the generated HTTPS URL with your friend. Both players open the URL, select **Network**, and use the room code created by one player.
+Share the generated HTTPS URL. Both players open it, choose **Network**, and one player creates a room. The second player joins with the displayed code.
 
-For a permanent public deployment, use a Node host that supports WebSockets and runs:
+For permanent hosting, use a Node.js service that supports WebSockets:
 
 ```text
 Build command: npm install && npm run build
 Start command: npm run start
 ```
 
-Set the service port from the platform's `PORT` environment variable. The server already reads `PORT` and binds to `0.0.0.0`.
+The server reads the platform-provided `PORT` variable and binds to `0.0.0.0` automatically.
 
-## Checks
+## Verify Changes
 
 ```powershell
 npm run build
-npx tsc -p tsconfig.server.json --noEmit
+npm run typecheck:server
 ```
 
-## Project Layout
+GitHub Actions runs both checks on pushes and pull requests.
+
+## Architecture
 
 ```text
-server/index.ts          Express and Socket.io room server
-src/App.tsx              Main game interface and interaction flow
-src/gameLogic.ts         Chess state helpers and status handling
+server/index.ts          Express server and Socket.io room lifecycle
+src/App.tsx              Main board, modes, controls, and game flow
+src/gameLogic.ts         Chess state, status, and material helpers
 src/botIntegration.ts    Training opponent integration boundary
-src/socketHandlers.ts    Browser Socket.io event wiring
-src/Piece.tsx            SVG chess piece renderer
-src/*.css                UI, board, animation, and piece styling
+src/socketHandlers.ts    Client-side multiplayer events
+src/Piece.tsx            Inline SVG piece renderer
+src/*.css                Board skin, responsive UI, and animations
 ```
+
+## License
+
+Released under the [MIT License](LICENSE).
